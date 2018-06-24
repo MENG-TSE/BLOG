@@ -11,9 +11,32 @@
 |
 */
 
-Route::get('/', 'PublicCOntroller@index');
-Route::get('post/{id}', 'PublicController@singlePost');
-Route::get('about', 'PublicController@about');
+Route::get('/', 'PublicCOntroller@index')->name('index');
+Route::get('post/{id}', 'PublicController@singlePost')->name('singlePost');
+Route::get('about', 'PublicController@about')->name('about');
 
-Route::get('contact', 'PublicController@contact');
-Route::post('contact', 'PublicController@contact');
+Route::get('contact', 'PublicController@contact')->name('contact');
+Route::post('contact', 'PublicController@contactPost')->name('contactPost');
+
+Auth::routes();
+
+Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+
+Route::prefix('user')->group(function(){
+    Route::get('dashboard','UserController@dashboard')->name('userDashboard');
+    Route::get('dashboard','UserController@comments')->name('userComments');
+
+});
+
+Route::prefix('author')->group(function(){
+    Route::get('dashboard','AuthorController@dashboard')->name('authorDashboard');
+    Route::get('posts','AuthorController@posts')->name('authorPosts');
+    Route::get('comments','AuthorController@comments')->name('authorComments');
+});
+
+Route::prefix('admin')->group(function(){
+    Route::get('dashboard','AdminController@dashboard')->name('adminDashbaord');
+    Route::get('posts','AdminController@posts')->name('adminPosts');
+    Route::get('comments','AdminController@comments')->name('adminComments');
+    Route::get('users','AdminController@users')->name('adminUsers');
+});
