@@ -9,15 +9,19 @@ class PublicController extends Controller
 {
     public function index()
     {
-
         $posts = Post::all();
-
         return view('welcome', compact('posts'));
     }
 
-    public function singlePost($id)
+    // public function singlePost($id)
+    // {
+    //     // $post = Post::find($id);
+    //     return view('singlePost', compact('post'));
+    // }
+
+    public function singlePost(Post $post)
     {
-        return view('singlePost');
+        return view('singlePost', compact('post'));
     }
 
     public function about()
