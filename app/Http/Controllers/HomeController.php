@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -29,7 +29,7 @@ class HomeController extends Controller
         } else if (Auth::user()->author == true){
             return redirect( route('authorDashboard'));
         } else{
-            return redirect( route('userDashbaord'));
+            return redirect( route('userDashboard'));
         }
     }
 }
