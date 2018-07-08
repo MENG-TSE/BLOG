@@ -39,6 +39,7 @@
             </div>
             <hr>
           @endforeach
+          {{ $posts->links() }}
           {{-- <div class="post-preview">
             <a href="post.html">
               <h2 class="post-title">

@@ -31,9 +31,9 @@
                                 <td>{{ \Carbon\Carbon::parse($post->updated_at)->diffForHumans() }}</td>
                                 <td>{{ $post->comments->count() }}</td>
                                 <td>
-                                    <a href="{{ route('postEdit',$post->id) }}" class="btn-warning">Edit</a>
-                                    <form method="POST" id="deletePost-{{ $post->id }}" action="{{ route('deletePost', $post->id) }}">@csrf</form>
-                                    <a href="#" onclick="document.getElementById('deletePost-{{ $post->id }}').submit()" class="btn-danger">Remove</a>
+                                    <a href="{{ route('postEdit',$post->id) }}" class="btn btn-warning"><i class="icon icon-pencil"></i></a>
+                                    {{-- <form method="POST" id="deletePost-{{ $post->id }}" action="{{ route('deletePost', $post->id) }}">@csrf</form> --}}
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deletePostModal-{{ $post->id }}">Remove</button>
                                 </td>
                             <tr>
                         @endforeach
@@ -43,4 +43,27 @@
             </div>
         </div>
 </div>
+
+@foreach(Auth::user()->posts as $post)
+<!-- Modal -->
+        <div class="modal fade" id="deletePostModal-{{ $post->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">You are about to delete {{ $post->title }}.</h4>
+            </div>
+            <div class="modal-body">
+            Are you sure?
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">No, keep it</button>
+            <form method="POST" id="deletePost-{{ $post->id }}" action="{{ route('deletePost', $post->id) }}">@csrf  
+            <button type="submit" class="btn btn-primary">Yes, delete it.</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+@endforeach
+
 @endsection

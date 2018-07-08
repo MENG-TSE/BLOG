@@ -75,6 +75,7 @@
                             </div>
 
                             <div class="card-body p-0">
+                                {!! $chart->container() !!}
                                 {{-- <div class="p-4">
                                     <canvas id="line-chart" width="100%" height="20"></canvas>
                                 </div>
@@ -106,4 +107,5 @@
                 </div>
             </div>
         </div>
+        {!! $chart->script() !!}
 @endsection

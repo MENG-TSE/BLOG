@@ -28,9 +28,9 @@
                                     <td>{{ $comment->content }}</td>
                                     <td>{{ \Carbon\Carbon::parse($comment->created_at)->diffForHumans() }}</td>
                                     
-                                    <form id="deleteComment-{{ $comment->id }}" action="{{ route('adminDeleteComment',$comment->id) }}" method="POST">@csrf</form>
+                                    {{-- <form id="deleteComment-{{ $comment->id }}" action="{{ route('adminDeleteComment',$comment->id) }}" method="POST">@csrf</form> --}}
                                     
-                                    <td><button type="button" class="btn-btn-danger" onclick="document.getElementById('deleteComment-{{ $comment->id }}').submit()">X</button></td>
+                                    <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteCommentModal-{{ $comment->id }}">X</button></td>
                                     
                                 <tr>
                             @endforeach
@@ -40,4 +40,27 @@
                 </div>
             </div>
 </div>
+
+@foreach($comments as $comment)
+<!-- Modal -->
+        <div class="modal fade" id="deleteCommentModal-{{ $comment->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">You are about to delete comment for post {{ $comment->post->title }}.</h4>
+            </div>
+            <div class="modal-body">
+            Are you sure?
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">No, keep it</button>
+            <form method="POST" id="deleteComment-{{ $comment->id }}" action="{{ route('adminDeleteComment', $comment->id) }}">@csrf  
+            <button type="submit" class="btn btn-primary">Yes, delete it.</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+@endforeach
+
 @endsection

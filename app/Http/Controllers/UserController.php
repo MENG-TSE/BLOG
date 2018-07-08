@@ -2,17 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\DashboardChart;
 use Hash;
 use App\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UserUpdate;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
+    public function _construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function dashboard()
     {
-        return view('user.dashboard');
+        $chart = new DashboardChart;
+
+        $days = $this->generateDateRange(Carbon::now()->subDays(30), Carbon::now());
+
+        $comments = [];
+
+        foreach ($days as $day){
+            $comments [] = Comment::whereDate('created_at', $day)->where('user_id',Auth::id())->count();
+        }
+
+        $chart->dataset('Comments', 'line', $comments);
+        $chart->labels($days);
+
+        return view('user.dashboard', compact('chart'));
+    }
+
+    private function generateDateRange(Carbon $start_date, Carbon $end_date)
+    {
+        $dates = [];
+        for($date = $start_date; $date->lte($end_date); $date->addDay()){
+            $dates[] = $date->format('Y-m-d');
+        }
+
+        return $dates;
     }
 
     public function comments()
@@ -61,5 +91,17 @@ class UserController extends Controller
         return back();
 
         // dump($request->all());
+    }
+
+    public function newComment(Request $request)
+    {
+        $comment = new Comment;
+
+        $comment->post_id = $request['post'];
+        $comment->User_id = Auth::id();
+        $comment->content = $request['comment'];
+        $comment->save();
+
+        return back();
     }
 }
