@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title') Author Posts @endsection
+@section('title') Admin Posts @endsection
 
 @section('content')
 <div class="content">

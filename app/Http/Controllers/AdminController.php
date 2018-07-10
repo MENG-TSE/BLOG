@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Comment;
 use App\User;
+use App\Product;
 use App\Http\Requests\UserUpdate;
 use Carbon\Carbon;
 
@@ -125,5 +126,53 @@ class AdminController extends Controller
         $user->delete();
 
         return back();
+    }
+
+    //Shop
+
+    public function products()
+    {
+        $products = Product::all();
+        return view('admin.products',compact('products'));
+    }
+
+    public function newProduct()
+    {
+        return view('admin.newProduct');
+    }
+
+    public function newProductPost(Request $request)
+    {
+        $this->validate($request,[
+            'title' => 'required|string',
+            'thumbnail' => 'required|file',
+            'description' => 'required',
+            'price' => 'required| regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
+        ]);
+
+        $product = new Product;
+        $product->title = $request['title'];
+        $product->description = $request['description'];
+        $product->price = $request['price'];
+
+        $thumbnail = $request->file('thumbnail');
+
+        $fileName = $thumbnail->getClientOriginalName();             //取得上傳檔案的原始名稱
+        $fileExtension = $thumbnail->getClientOriginalExtension();   //取得上傳檔案的副檔名
+
+        $thumbnail->move('product-images', $fileName);              //移動上傳檔案
+        $product->thumbnail = 'product-images/' . $fileName;         
+        
+        $product->save();
+    }
+
+    public function editProduct()
+    {
+
+    }
+
+    public function editProductPost(Request $request)
+    {
+
     }
 }
