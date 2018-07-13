@@ -161,18 +161,49 @@ class AdminController extends Controller
         $fileExtension = $thumbnail->getClientOriginalExtension();   //取得上傳檔案的副檔名
 
         $thumbnail->move('product-images', $fileName);              //移動上傳檔案
-        $product->thumbnail = 'product-images/' . $fileName;         
+        $product->thumbnail = 'product-images/' . $fileName;        //移動上傳檔案
         
         $product->save();
+
+        return back();
     }
 
-    public function editProduct()
+    public function editProduct($id)
     {
+        $product = Product::findOrFail($id);
+        return view('admin.editProduct', compact('product'));
+    }
+
+    public function editProductPost(Request $request, $id)
+    {
+        $this->validate($request,[
+            'title' => 'required|string',
+            'thumbnail' => 'file',
+            'description' => 'required',
+            'price' => 'required| regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
+        ]);
+        $product = Product::findOrFail($id);
+        $product->title = $request['title'];
+        $product->description = $request['description'];
+        $product->price = $request['price'];
+
+
+        if($request->hasFile('thumbnail')){
+            $thumbnail = $request->file('thumbnail');
+            $fileName = $thumbnail->getClientOriginalName();             //取得上傳檔案的原始名稱
+            // $fileExtension = $thumbnail->getClientOriginalExtension();   //取得上傳檔案的副檔名
+            $thumbnail->move('product-images', $fileName);              //移動上傳檔案
+            $product->thumbnail = 'product-images/' . $fileName;        //移動上傳檔案
+        }
+        $product->save();
+
+        return back();
 
     }
 
-    public function editProductPost(Request $request)
+    public function deleteProduct($id)
     {
-
+        $product = Product::findOrFail($id)->delete();
+        return back();
     }
 }
